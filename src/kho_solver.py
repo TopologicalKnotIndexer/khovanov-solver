@@ -7,6 +7,8 @@ import os
 import shutil
 import tempfile
 import subprocess
+from input_sanity import input_sanity
+from de_k8_r1     import de_k8_r1
 
 
 
@@ -73,7 +75,14 @@ def __pd_code_wrapper(pd_code: list) -> str: # 获取 JavaKh 输入风格的名�
 
 
 
-def kho_solver(pd_code: list) -> str: # 计算 Khovaov 同调，不能处理平凡扭结，r1-move, 8字交点
+# all_input 既可以是 list of list 格式的 PD_CODE
+# 也可以时字符串形式的 list of list
+def kho_solver(all_input) -> str: # 计算 Khovaov 同调，不能处理平凡扭结，r1-move, 8字交点
+    pd_code  = input_sanity(str(all_input))  # 检查输入是否是合法的 pd_code
+    pd_code  = de_k8_r1(pd_code)       # 消除 r1-move 以及 nugatory crossing
+    if pd_code == []:                   # 处理平凡扭结的特殊情况，以免 JavaKh 出现异常
+        print("q^-1*t^0*Z[0] + q^1*t^0*Z[0]")
+        return
     create_temp_dir()
     copy_template_to_temp()
     kho_value = ""
