@@ -23,7 +23,7 @@ def load_module_from_path(path: str, mod_name: str): # 从指定路径导入一�
 # 如果 PD_CODE 字符串合法，返回字符串形式的 PD_CODE
 # 否则报错
 def input_sanity(pd_code_value: str) -> list:
-    return load_module_from_path(SUBDIR, "pd_code_input_sanity").pd_code_input_sanity(pd_code_value)
+    return load_module_from_path(SUBDIR, "pd_code_input_sanity").input_sanity(pd_code_value)
 
 if __name__ == "__main__":
     print(input_sanity("[]"))
