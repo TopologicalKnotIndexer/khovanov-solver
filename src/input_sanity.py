@@ -1,28 +1,30 @@
-# 给定一个字符串
-# 判断它是否是一个合法的扭结 PD_CODE
-# 理论上需要进行平面图判断，但是考虑到节约时间，这里省略了这一步
-# 如果输入合法，则返回 pd_code
-# 如何输入不合法，则直接报错并退出
+# 桥接：https://github.com/TopologicalKnotIndexer/pd_code_input_sanity
+import os
+DIRNOW = os.path.dirname(os.path.abspath(__file__))
+SUBDIR = os.path.join(DIRNOW, "pd_code_input_sanity", "src") # 子包路径
 
-def input_sanity(input_string: str) -> list:
-    pd_code = eval(input_string)
-    assert isinstance(pd_code, list) # PD_CODE 必须是一个 list
-    for item in pd_code:
-        assert isinstance(item, list) # PD_CODE 中的每个元素必须是一个 list
-    for item in pd_code:
-        assert len(item) == 4 # PD_CODE 中的每个 crossing 中必须有四个元素
-    for item in pd_code:
-        for x in item:
-            assert isinstance(x, int) # PD_CODE 的每个 crossing 中的四个元素必须都是整数
-    cnt = {}
-    for item in pd_code: # 统计每个弧编号出现的次数，存入 cnt 中
-        for x in item:
-            if cnt.get(x) is None:
-                cnt[x] = 0
-            cnt[x] += 1
-    for x in cnt:
-        assert cnt[x] == 2 # PD_CODE 中每条弧线，必须恰好出现两次
-    return pd_code
 
-if __name__ == "__main__": # 测试程序
-    print(input_sanity("[[1,2,2,1]]"))
+# ======================================== BEGIN IMPORT FROM PATH ======================================== #
+import importlib
+import json
+import sys
+def load_module_from_path(path: str, mod_name: str): # 从指定路径导入一个包
+    assert os.path.isdir(path)                       # 路径必须存在
+    path         = os.path.abspath(path)             # 获得绝对路径
+    old_sys_path = json.loads(json.dumps(sys.path))  # 存档旧的 sys.path
+    sys.path     = [path] + sys.path                 # 将新的路径加入 sys.path
+    mod          = importlib.import_module(mod_name) # 加载指定的包
+    sys.path     = old_sys_path                      # 恢复旧的 sys.path
+    return mod
+# ======================================== END IMPORT FROM PATH ======================================== #
+
+
+
+# 如果 PD_CODE 字符串合法，返回字符串形式的 PD_CODE
+# 否则报错
+def input_sanity(pd_code_value: str) -> list:
+    return load_module_from_path(SUBDIR, "pd_code_input_sanity").pd_code_input_sanity(pd_code_value)
+
+if __name__ == "__main__":
+    print(input_sanity("[]"))
+    print(input_sanity("[[1, 2, 3, 4]]")) # 会报错
