@@ -29,8 +29,10 @@ def create_temp_dir(): # 创建临时目录
     TMP_DIRS.append(os.path.abspath(temp_dir))
 
 def remove_temp_dir(): # 清除所有临时目录
+    global TMP_DIRS
     for temp_dir in TMP_DIRS:
         shutil.rmtree(temp_dir)
+    TMP_DIRS = []
 
 
 
