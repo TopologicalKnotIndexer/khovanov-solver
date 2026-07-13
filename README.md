@@ -1,18 +1,61 @@
 # khovanov-solver
-给定 PD_CODE 计算 khovanov 同调的通用程序，本程序旨在尽可能减少计算过程中需要的依赖。
 
+Compute integral Khovanov homology from a knot planar diagram (PD) code using
+the JavaKh bytecode committed in this repository.
 
+## Requirements
 
-## 前置条件
+- Python 3.10 or newer
+- A Java runtime (`java` on `PATH`, or pass an explicit executable path)
 
-- `python3`
-- `openjdk-11`
+The repository is independently cloneable. Organization-owned helper sources
+are ordinary tracked files, not Git submodules. Bash and symbolic-link support
+are not required.
 
+## Command-line usage
 
+```bash
+echo '[[1, 5, 2, 4], [3, 1, 4, 6], [5, 3, 6, 2]]' | python src/main.py
+```
 
-## 使用方法
+The Java executable, timeout, and heap limit can be controlled explicitly:
 
-- 运行 `python3 ./src/main.py`
-  - 向标准输入流中输入一个 list of list 作为 PD_CODE（会对输入进行基本的格式检查，但不检查连通分支数目以及是否是平面图）
-  - 程序会将 khovanov 同调输出到标准输出流，运行时遇到的错误输出到标准错误流
+```bash
+python src/main.py --java /path/to/java --timeout 120 --max-heap 4g
+```
 
+Errors are written to standard error and produce a nonzero exit status.
+
+## Python API
+
+```python
+from kho_solver import kho_solver
+
+homology = kho_solver(pd_code, java_path="java", timeout=120, max_heap="4g")
+```
+
+## Algorithm
+
+The input is safely parsed and checked for four-entry crossings, integer arc
+labels, and two occurrences of each label. Reidemeister-I and verified
+nugatory crossings are removed before evaluation. The unknot has the explicit
+result `q^-1*t^0*Z[0] + q^1*t^0*Z[0]` and does not invoke JavaKh.
+
+For other knots, the solver writes JavaKh's `PD[...]` representation to an
+isolated temporary directory and starts Java directly with a platform-correct
+classpath. The process exit status and quoted homology value are both checked.
+Temporary data is removed by `TemporaryDirectory`, including on failures.
+
+The helper snapshots under `src/pd_code_de_r1_k8` and
+`src/pd_code_input_sanity` are statically imported; no code changes `sys.path`
+or performs Git submodule operations. See `VENDORED_DEPENDENCIES.md` for their
+audited revisions.
+
+## Development
+
+```bash
+python -m unittest discover -s tests -v
+```
+
+The integration test runs the bundled JavaKh backend when `java` is available.
+No PyPI publication is performed as part of repository maintenance.
