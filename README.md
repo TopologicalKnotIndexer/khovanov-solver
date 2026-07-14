@@ -66,7 +66,7 @@ If you use this repository in academic work, please cite it as:
 
 ```bibtex
 @software{topologicalknotindexer_khovanov_solver,
-  author = {{TopologicalKnotIndexer contributors}},
+  author = {{GGN\_2015}},
   title = {{khovanov-solver}},
   year = {2026},
   url = {https://github.com/TopologicalKnotIndexer/khovanov-solver}
