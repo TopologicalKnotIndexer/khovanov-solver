@@ -59,3 +59,16 @@ python -m unittest discover -s tests -v
 
 The integration test runs the bundled JavaKh backend when `java` is available.
 No PyPI publication is performed as part of repository maintenance.
+
+## Citation
+
+If you use this repository in academic work, please cite it as:
+
+```bibtex
+@software{topologicalknotindexer_khovanov_solver,
+  author = {{TopologicalKnotIndexer contributors}},
+  title = {{khovanov-solver}},
+  year = {2026},
+  url = {https://github.com/TopologicalKnotIndexer/khovanov-solver}
+}
+```
